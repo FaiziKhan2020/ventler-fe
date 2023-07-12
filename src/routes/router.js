@@ -15,7 +15,7 @@ const Router = (isLoggedIn) => [
     ),
   },
   {
-    path: '/dashboard1',
+    path: '*',
     element: isLoggedIn ? <ChatBoardPage /> : <Login />,
   },
   {

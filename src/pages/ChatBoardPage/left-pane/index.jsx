@@ -18,6 +18,7 @@ import {
   Typography,
 } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
+import CreateIcon from '@mui/icons-material/CreateRounded';
 import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -36,7 +37,7 @@ const propTypes = {
   width: number,
 };
 
-const LeftPane = ({ width = 240 }) => {
+const LeftPane = ({ width = 240, onUpdateActive }) => {
   const [selectedChatId, setSelectedChatId] = useState(null);
   const [chatName, setChatName] = useState('');
   const [chatsOpen, setChatsOpen] = useState(true);
@@ -92,7 +93,7 @@ const LeftPane = ({ width = 240 }) => {
       >
         Kiyoung SaaS
       </Box>
-      <Box display='flex' alignItems='flex-end' width='100%' flexGrow={1}>
+      <Box display='flex' alignItems='flex-start' width='100%' flexGrow={1}>
         <List
           sx={{
             width: '100%',
@@ -106,15 +107,15 @@ const LeftPane = ({ width = 240 }) => {
               marginBottom: 0.5,
             }}
           />
-          <ListItem disablePadding>
+          <ListItem onClick={()=>onUpdateActive(1)} disablePadding>
             <ListItemButton>
               <ListItemIcon>
-                <PersonIcon />
+                <CreateIcon />
               </ListItemIcon>
-              <ListItemText primary={'Profile'} />
+              <ListItemText primary={'Create Content'} />
             </ListItemButton>
           </ListItem>
-          <ListItem disablePadding>
+          <ListItem onClick={()=>onUpdateActive(2)} disablePadding>
             <ListItemButton>
               <ListItemIcon>
                 <SettingsIcon />

@@ -14,13 +14,27 @@ import {
   fetchingFlows,
 } from '../../app/data/data.actions';
 import 'react-sliding-pane/dist/react-sliding-pane.css';
+import Panel from './panel';
+import { Routes, Route, BrowserRouter, } from 'react-router-dom';
+import Settings from './settings';
 
 const ChatBoardPage = () => {
+  const [activePage, setActivePage] = useState(1);
+  const allPages = [Panel,Settings];
 
+  function onPageChanged(idx){
+    setActivePage(idx)
+  }
 
   return (
     <Box className='h-screen flex'>
-      <LeftPane />
+      <LeftPane onUpdateActive={onPageChanged} />
+      {
+        activePage && activePage === 1 && <Panel/>
+      }
+      {
+        activePage && activePage === 2 && <Settings/>
+      }
     </Box>
   );
 };
