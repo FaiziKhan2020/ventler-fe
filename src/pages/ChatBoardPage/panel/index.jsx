@@ -77,7 +77,7 @@ const Panel = () =>{
         <CardHeader
           title="AI Generated Blog"
         />
-        <CardContent>
+        <CardContent style={{overflowY: 'scroll', maxHeight:'550px'}}>
           {htmlToReactParser.parse(content)}
           </CardContent>
     </Card>
