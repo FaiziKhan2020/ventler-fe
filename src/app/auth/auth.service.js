@@ -3,10 +3,10 @@ import { METHODS } from '../shared/requests.constants';
 import { AUTH_END_POINT } from './action.constant';
 
 export const checkAutoLogin = () => {
-  const jwt = localStorage.getItem('token');
-  if (!jwt) return false;
-  const decodedJwt = JSON.parse(atob(jwt.split('.')[1]));
-  if (decodedJwt.expiry * 1000 < Date.now()) return false;
+  // const jwt = localStorage.getItem('token');
+  // if (!jwt) return false;
+  // const decodedJwt = JSON.parse(atob(jwt.split('.')[1]));
+  // if (decodedJwt.expiry * 1000 < Date.now()) return false;
   return true;
 };
 

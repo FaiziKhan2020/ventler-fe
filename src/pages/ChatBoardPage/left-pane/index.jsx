@@ -17,20 +17,8 @@ import {
   OutlinedInput,
   Typography,
 } from '@mui/material';
-import PersonIcon from '@mui/icons-material/Person';
 import CreateIcon from '@mui/icons-material/CreateRounded';
-import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import chatIcon from '../../../static/icons/chat-icon.svg';
-import newFolderIcon from '../../../static/icons/new-folder-icon.svg';
-import binIcon from '../../../static/icons/bin-icon.svg';
-import editIcon from '../../../static/icons/edit-icon.svg';
-import shareIcon from '../../../static/icons/share-icon.svg';
-import { selectChats } from '../../../app/data/data.selectors';
-import { createChat, setMessages } from '../../../app/data/data.actions';
-import ListItemCard from '../../../components/list-item-card';
 import LogoutIcon from '@mui/icons-material/Logout';
 
 const propTypes = {
@@ -42,24 +30,7 @@ const LeftPane = ({ width = 240, onUpdateActive }) => {
   const [chatName, setChatName] = useState('');
   const [chatsOpen, setChatsOpen] = useState(true);
   const navigate = useNavigate()
-
-  const dispatch = useDispatch();
-  const chats = useSelector(selectChats);
-
-  const handleChatSelect = (chatId) => {
-    setSelectedChatId(chatId);
-    dispatch(setMessages([...chats[chatId]]));
-  };
-  const handleChatsToggle = () => {
-    setChatsOpen((prev) => !prev);
-  };
-  const newChat = () => {
-    if (chatName && chatName !== '') {
-      dispatch(createChat(chatName));
-      setChatName('');
-    }
-  };
-
+  
   const logout = () => {
     localStorage.clear();
     window.location.href = '/auth'

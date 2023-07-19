@@ -20,7 +20,10 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import axios from 'axios';
+import { getBaseApi } from "../../../config/Enviroment";
+import CircleLoader from 'react-spinners/PulseLoader'
 
 const style = {
   position: "absolute",
@@ -36,11 +39,53 @@ const style = {
   pb: 3,
 };
 
+const fetchConfigs = () => {
+  return axios.get(getBaseApi()+"configs")
+}
+
+const addWordpressDetails = ({wordpressTitle, wordpressUrl, wordpressUser, wordpressCreds, userPrompt}) =>{
+  return axios.post(getBaseApi()+"add_wpress",{
+    title: wordpressTitle,
+    url: wordpressUrl,
+    user: wordpressUser,
+    creds: wordpressCreds,
+    prompt: userPrompt
+  })
+}
+
+const updateOpenAI = (key)=>{
+  return axios.post(getBaseApi()+"openai_creds",{
+    openai_creds: key
+  })
+}
+
 const Settings = () => {
   const [values, setValues] = useState({
-    wordpress: "",
-    openai: "",
+    wordpressTitle: "",
+    wordpressUrl: "",
+    wordpressUser: "",
+    wordpressCreds: "",
+    userPrompt: "",
   });
+  const [data, setData] = useState([])
+  const [loading, setLoading] = useState(false);
+  const [key, setKey] = useState('');
+
+
+  useEffect(()=>{
+    //Retrieve user configs
+    fetchConfigs().then((data)=>{
+      setData(data.data.configs.data)
+      if(data.data.configs.data.length){
+        let keycred = data.data.configs.data.find((row)=>row.credential_name === 'open_ai')
+        setKey(keycred?keycred.credential_value:'');
+      }
+    }).catch((err)=>{
+      console.log(err)
+    })
+
+  },[])
+
   const [open, setOpen] = useState(false);
 
   const handleChange = useCallback((event) => {
@@ -74,33 +119,51 @@ const Settings = () => {
     },
   }));
 
-  function createData(name, calories, fat) {
-    return { name, calories, fat };
-  }
   const handleOpen = () => {
     setOpen(true);
   };
+
+  const addSite = () => {
+    setLoading(true)
+    addWordpressDetails({userPrompt: values.userPrompt,wordpressCreds: values.wordpressCreds, wordpressUrl: values.wordpressUrl, wordpressTitle: values.wordpressTitle, wordpressUser: values.wordpressUser}).then((res)=>{
+      console.log('Log: ', res)
+    }).catch((err)=>{
+      setLoading(false)
+    }).finally(()=>{
+      fetchConfigs().then((data)=>{
+        console.log('Confgis: ', data.data)
+      }).catch((err)=>{
+        console.log(err)
+      }).then(()=>{
+        setLoading(false)
+        setOpen(false)
+      })
+    })
+  }
   const handleClose = () => {
-    setOpen(false);
+    setLoading(true)
+    
   };
 
-  const rows = [
-    createData(
-      "My Korean Website",
-      "https://koreansite.com",
-      "hereAddKey_65464654564"
-    ),
-    createData(
-      "My German Website",
-      "https://Germansite.com",
-      "hereAddKey_65464654564"
-    ),
-    createData(
-      "My Blogging Website",
-      "https://Bloggingsite.com",
-      "hereAddKey_65464654564"
-    ),
-  ];
+  const updateKey = () => {
+    setLoading(true)
+    updateOpenAI(key).then((res)=>{
+      fetchConfigs().then((data)=>{
+        setData(data.data.configs.data)
+        if(data.data.configs.data.length){
+          let keycred = data.data.configs.data.find((row)=>row.credential_name === 'open_ai')
+          setKey(keycred?keycred.credential_value:'');
+        }
+      }).catch((err)=>{
+        console.log(err)
+      })
+    }).catch((err)=>{
+      console.log(err)
+    }).finally(()=>{
+      setLoading(false)
+    })
+  }
+
 
   return (
     <main className="ml-0 h-full p-6 flex-grow">
@@ -117,32 +180,51 @@ const Settings = () => {
           <Typography>Wordpress Title</Typography>
           <TextField
             fullWidth
+            onChange={handleChange}
             placeholder="blogging"
-            name="article"
+            name="wordpressTitle"
             type="text"
           />
           <Typography sx={{ mt: 2 }}>URL</Typography>
           <TextField
             fullWidth
+            onChange={handleChange}
             placeholder="example@web.com"
-            name="article"
+            name="wordpressUrl"
             type="text"
           />
           <Typography sx={{ mt: 2 }}>Credentials</Typography>
           <TextField
             fullWidth
+            onChange={handleChange}
             placeholder="Wp_4654564646"
-            name="article"
+            name="wordpressCreds"
+            type="text"
+          />
+          <Typography sx={{ mt: 2 }}>Wordpress Username</Typography>
+          <TextField
+            fullWidth
+            onChange={handleChange}
+            placeholder="Wp_4654564646"
+            name="wordpressUser"
+            type="text"
+          />
+          <Typography sx={{ mt: 2 }}>Additional Prompt</Typography>
+          <TextField
+            fullWidth
+            onChange={handleChange}
+            placeholder="Wp_4654564646"
+            name="userPrompt"
             type="text"
           />
 
           <Button
             variant="contained"
-            sx={{ mt: 2 }}
+            sx={{ mt: 2, minWidth:'120px', minHeight:'40px' }}
             style={{ float: "right" }}
-            onClick={handleClose}
+            onClick={addSite}
           >
-            ADD
+            {loading ? <CircleLoader size={10} color="white"/> : 'Add Site'}
           </Button>
         </Box>
       </Modal>
@@ -157,15 +239,17 @@ const Settings = () => {
                   fullWidth
                   placeholder="OpenAI Secret Key"
                   name="openai"
-                  onChange={handleChange}
+                  onChange={(eve)=>setKey(eve.target.value)}
                   type="text"
-                  value={values.openai}
+                  value={key}
                 />
               </Box>
             </Stack>
           </CardContent>
           <CardActions sx={{ justifyContent: "flex-end" }}>
-            <Button variant="contained">Update</Button>
+            <Button onClick={updateKey} variant="contained">
+            {loading ? <CircleLoader size={10} color="white"/> : 'Update'}
+            </Button>
           </CardActions>
         </Card>
       </form>
@@ -198,21 +282,30 @@ const Settings = () => {
                 <StyledTableCell>Website Name</StyledTableCell>
                 <StyledTableCell>URL</StyledTableCell>
                 <StyledTableCell>Credentials</StyledTableCell>
+                <StyledTableCell>Wordpress User</StyledTableCell>
+                <StyledTableCell>Additional Prompt</StyledTableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
-              {rows.map((row) => (
-                <StyledTableRow key={row.name}>
+            <TableBody >
+              {data.filter((row)=>row.credential_name === 'wordpress').map((row) => (
+                <StyledTableRow key={row.credential_name}>
                   <StyledTableCell component="th" scope="row">
-                    {row.name}
+                    {row.wordpress_site}
                   </StyledTableCell>
-                  <StyledTableCell>{row.calories}</StyledTableCell>
-                  <StyledTableCell>{row.fat}</StyledTableCell>
+                  <StyledTableCell>{row.wordpress_url}</StyledTableCell>
+                  <StyledTableCell>{row.credential_value}</StyledTableCell>
+                  <StyledTableCell>{row.wordpress_user}</StyledTableCell>
+                  <StyledTableCell>{row.user_prompt}</StyledTableCell>
                 </StyledTableRow>
               ))}
             </TableBody>
           </Table>
         </TableContainer>
+        {
+                !data.length ? <Box sx={{width:'100%', textAlign:'center',marginTop:'20px'}}>
+                <Typography fontSize={"large"}>No Records</Typography>
+                </Box>:<></>
+              }
       </Grid>
     </main>
   );
