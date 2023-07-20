@@ -141,8 +141,7 @@ const Settings = () => {
     })
   }
   const handleClose = () => {
-    setLoading(true)
-    
+    setOpen(false)
   };
 
   const updateKey = () => {
@@ -222,7 +221,7 @@ const Settings = () => {
             variant="contained"
             sx={{ mt: 2, minWidth:'120px', minHeight:'40px' }}
             style={{ float: "right" }}
-            onClick={addSite}
+            onClick={()=>addSite()}
           >
             {loading ? <CircleLoader size={10} color="white"/> : 'Add Site'}
           </Button>

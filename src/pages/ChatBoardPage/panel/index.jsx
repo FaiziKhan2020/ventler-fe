@@ -159,7 +159,7 @@ const Panel = () => {
   }
   function handleSubmit() {}
   return (
-    <main className="ml-0 h-full p-6 flex-grow">
+    <main style={{overflowY:'scroll'}} className="ml-0 h-full p-6 flex-grow">
       <Modal
         open={open}
         onClose={handleClose}
