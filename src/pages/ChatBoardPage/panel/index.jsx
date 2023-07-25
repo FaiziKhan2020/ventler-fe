@@ -11,6 +11,7 @@ import {
   Typography,
   Grid,
   Modal,
+  Switch,
 } from "@mui/material";
 
 import axios from "axios";
@@ -85,6 +86,7 @@ const Panel = () => {
   const [sites, setSites] = useState([])
   const [activeSite, setActiveSite] =  useState('select')
   const [articleData, setArticleData] =  useState('')
+  const [autoUpload, setAutoUpload] =  useState(true)
 
   useEffect(()=>{
     getQueue().then((data)=>{
@@ -206,6 +208,7 @@ const Panel = () => {
                   </Select>
                 </FormControl>
               </Grid>
+              <label style={{lineHeight:'36px', marginLeft:'16px'}}>Auto Upload: </label><Switch onChange={()=>setAutoUpload((val)=> !val)}  checked={autoUpload} />
             </Grid>
           </CardContent>
           <CardActions sx={{ justifyContent: "flex-end" }}>
@@ -218,6 +221,48 @@ const Panel = () => {
       {/* <Typography variant="h5" style={{ paddingLeft: "20px" }}>
         All Article Queue
       </Typography> */}
+
+      {/* Table view Queue */}
+      <Grid container>
+        <TableContainer
+          component={Paper}
+          style={{
+            overflow: "scroll",
+            maxHeight: "300px",
+          }}
+        >
+          <Table aria-label="customized table">
+            <TableHead>
+              <TableRow>
+                <StyledTableCell>Article Title</StyledTableCell>
+                <StyledTableCell>URL</StyledTableCell>
+                <StyledTableCell>Wordpress Site</StyledTableCell>
+                <StyledTableCell>Status</StyledTableCell>
+                <StyledTableCell>Additional Prompt</StyledTableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody >
+              {data.filter((row)=>row.credential_name === 'wordpress').map((row) => (
+                <StyledTableRow key={row.credential_name}>
+                  <StyledTableCell component="th" scope="row">
+                    {row.wordpress_site}
+                  </StyledTableCell>
+                  <StyledTableCell>{row.wordpress_url}</StyledTableCell>
+                  <StyledTableCell>{row.credential_value}</StyledTableCell>
+                  <StyledTableCell>{row.wordpress_user}</StyledTableCell>
+                  <StyledTableCell>{row.user_prompt}</StyledTableCell>
+                </StyledTableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        {
+                !data.length ? <Box sx={{width:'100%', textAlign:'center',marginTop:'20px'}}>
+                <Typography fontSize={"large"}>No Records</Typography>
+                </Box>:<></>
+              }
+      </Grid>
+
 
       {/* {content && ( */}
       <Card>
@@ -253,9 +298,9 @@ const Panel = () => {
                   </Typography>
 
                   <Typography variant="div">
-                    <FiberManualRecordIcon color={rec.status === 'Processing'? "success": (rec.status ==='In Queue' ? "primary": "error")}/> {rec.status}
+                    <FiberManualRecordIcon color={rec.status === 'Processing'? "primary": (rec.status ==='In Queue' ? "info": (rec.status ==="Done" ? "success": "error"))}/> {rec.status}
                   </Typography>
-                  <LinearProgress hidden={rec.status === 'Done'} sx={{ mt: 2 }} />
+                  { rec.status !== 'Done' ? <LinearProgress hidden={rec.status === 'Done'} sx={{ mt: 2 }} /> : <></>}
                 </CardContent>
                 <CardActions sx={{ mb: 2 }} style={{ float: "right" }}>
                   <Button onClick={()=>{setArticleData(rec.output_html);setOpen(true)}} disabled={!rec.output_html} variant="outlined" size="small">
@@ -268,7 +313,6 @@ const Panel = () => {
               </Card>
             </Grid>
           </Grid>
-          {/* {htmlToReactParser.parse(content)} */}
         </CardContent>
           ))
         }
