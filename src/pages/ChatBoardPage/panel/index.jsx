@@ -87,12 +87,24 @@ const init_loop = () => {
   return axios.get(getBaseApi() + "do");
 };
 
-const insertIntoQueue = (title, url, wordpressUrl, site) => {
+const insertIntoQueue = (title, url, wordpressUrl, site,autoUpload,length,tone,mainPrompt,language,headings) => {
   return axios.post(getBaseApi() + "insert_queue", {
     title,
     url,
     wordpress_url: wordpressUrl,
     site,
+    auto_upload: autoUpload,
+    main_prompt: mainPrompt,
+    headings,
+    language,
+    tone,
+    length
+  });
+};
+
+const upload = (id) => {
+  return axios.post(getBaseApi() + "upload", {
+    item_id: id,
   });
 };
 
@@ -104,6 +116,9 @@ const regenerate = (id) => {
 
 const Panel = () => {
   const [url, setUrl] = useState("");
+  const [length, setLength] = useState("");
+  const [tone, setTone] = useState("");
+  const [mainPrompt, setMainPrompt] = useState("");
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingReg, setLoadingReg] = useState(false);
@@ -112,7 +127,7 @@ const Panel = () => {
   const [data, setData] = useState([]);
   const [sites, setSites] = useState([]);
   const [activeSite, setActiveSite] = useState("select");
-  const [language, setLanguage] = useState("select");
+  const [language, setLanguage] = useState("English");
   const [heading, setHeading] = useState("select");
   const [articleData, setArticleData] = useState("");
   const [autoUpload, setAutoUpload] = useState(true);
@@ -163,7 +178,7 @@ const Panel = () => {
     let site = sites.find((site) => site.wordpress_url === activeSite);
     if (!site) return window.alert("Something went wrong!");
     setLoading(true);
-    insertIntoQueue(site.wordpress_site, url, activeSite, site.wordpress_site)
+    insertIntoQueue(site.wordpress_site, url, activeSite, site.wordpress_site,autoUpload,length,tone,mainPrompt,language,heading)
       .then((res) => {
         getQueue()
           .then((data) => {
@@ -279,8 +294,8 @@ const Panel = () => {
                     placeholder="eg. 200,300,400"
                     name="eg. 200,300,400"
                     type="text"
-                    value={url}
-                    onChange={(eve) => setUrl(eve.target.value)}
+                    value={length}
+                    onChange={(eve) => setLength(eve.target.value)}
                   />
                 </Grid>
                 <Grid item xs={12} md={3}>
@@ -290,8 +305,8 @@ const Panel = () => {
                     placeholder="eg. Persuasive,Informative,etc"
                     name="Tone"
                     type="text"
-                    value={url}
-                    onChange={(eve) => setUrl(eve.target.value)}
+                    value={tone}
+                    onChange={(eve) => setTone(eve.target.value)}
                   />
                 </Grid>
                 <Grid item xs={12} md={2} style={{ paddingTop: "40px" }}>
@@ -304,7 +319,6 @@ const Panel = () => {
                         setLanguage(eve.target.value);
                       }}
                     >
-                      <MenuItem value="select">Language</MenuItem>
                       <MenuItem value={"English"}>English</MenuItem>
                       <MenuItem value={"Korean"}>Korean</MenuItem>
                     </Select>
@@ -336,8 +350,8 @@ const Panel = () => {
                     placeholder="Main prompt"
                     name="prompt"
                     type="text"
-                    value={url}
-                    onChange={(eve) => setUrl(eve.target.value)}
+                    value={mainPrompt}
+                    onChange={(eve) => setMainPrompt(eve.target.value)}
                   />
                 </Grid>
               </Grid>
@@ -357,7 +371,8 @@ const Panel = () => {
           </CardActions>
         </Card>
       </form>
-
+      <Card>
+        <CardHeader title="All Article Queue" />
       {/* Table view Queue */}
       <Grid container>
         <TableContainer
@@ -375,21 +390,65 @@ const Panel = () => {
                 <StyledTableCell>URL</StyledTableCell>
                 <StyledTableCell>Wordpress Site</StyledTableCell>
                 <StyledTableCell>Status</StyledTableCell>
-                <StyledTableCell>Additional Prompt</StyledTableCell>
+                <StyledTableCell>Actions</StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {data
-                .filter((row) => row.credential_name === "wordpress")
                 .map((row) => (
-                  <StyledTableRow key={row.credential_name}>
+                  <StyledTableRow key={row.id}>
                     <StyledTableCell component="th" scope="row">
-                      {row.wordpress_site}
+                      {row.title}
+                    </StyledTableCell>
+                    <StyledTableCell>
+                    <a style={{ color: "blue" }} href={row.article_url}>
+                        {row.article_url}
+                      </a>
                     </StyledTableCell>
                     <StyledTableCell>{row.wordpress_url}</StyledTableCell>
-                    <StyledTableCell>{row.credential_value}</StyledTableCell>
-                    <StyledTableCell>{row.wordpress_user}</StyledTableCell>
-                    <StyledTableCell>{row.user_prompt}</StyledTableCell>
+                    <StyledTableCell>{row.status}</StyledTableCell>
+                    <StyledTableCell>
+                      <Box display={"grid"}>
+                    <Button
+                      onClick={() => {
+                        setArticleData(row.output_html);
+                        setOpen(true);
+                      }}
+                      disabled={!row.output_html}
+                      variant="outlined"
+                      size="small"
+                      sx={{marginBottom: '15px'}}
+                    >
+                      Review Result
+                    </Button>
+                    <Button
+                      onClick={() => regenArticle(row.id)}
+                      variant="contained"
+                      size="small"
+                    >
+                      {loadingReg ? (
+                        <CircleLoader size={10} />
+                      ) : (
+                        "Regenerate Article"
+                      )}
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setLoading(true);
+                        upload(row.id).then(()=>{
+                          setLoading(false)
+                          window.alert("Article Uploaded!")
+                        }).catch(err => setLoading(false))
+                      }}
+                      disabled={!row.output_html}
+                      variant="outlined"
+                      size="small"
+                      sx={{marginTop: '15px'}}
+                    >
+                      Upload Article
+                    </Button>
+                    </Box>
+                    </StyledTableCell>
                   </StyledTableRow>
                 ))}
             </TableBody>
@@ -403,90 +462,7 @@ const Panel = () => {
           <></>
         )}
       </Grid>
-
-      {/* {content && ( */}
-      <Card>
-        <CardHeader title="All Article Queue" />
-        {data?.map((rec) => (
-          <CardContent
-            style={{
-              overflow: "scroll",
-              maxHeight: "400px",
-              overflowX: "hidden",
-            }}
-          >
-            <Grid container spacing={2}>
-              <Grid item md={6}>
-                <Card sx={{ minWidth: 220 }} style={{ background: "#f4f4f4" }}>
-                  <CardContent>
-                    <Typography
-                      sx={{ fontSize: 17, fontWeight: "bold", color: "black" }}
-                      color="text.secondary"
-                      gutterBottom
-                    >
-                      {rec.title}
-                    </Typography>
-                    <Typography sx={{ fontSize: 14, mb: 1 }} component="div">
-                      Article URL:
-                      <a style={{ color: "blue" }} href={rec.article_url}>
-                        {rec.article_url}
-                      </a>
-                    </Typography>
-
-                    <Typography variant="div">
-                      <FiberManualRecordIcon
-                        color={
-                          rec.status === "Processing"
-                            ? "primary"
-                            : rec.status === "In Queue"
-                            ? "info"
-                            : rec.status === "Done"
-                            ? "success"
-                            : "error"
-                        }
-                      />{" "}
-                      {rec.status}
-                    </Typography>
-                    {rec.status !== "Done" ? (
-                      <LinearProgress
-                        hidden={rec.status === "Done"}
-                        sx={{ mt: 2 }}
-                      />
-                    ) : (
-                      <></>
-                    )}
-                  </CardContent>
-                  <CardActions sx={{ mb: 2 }} style={{ float: "right" }}>
-                    <Button
-                      onClick={() => {
-                        setArticleData(rec.output_html);
-                        setOpen(true);
-                      }}
-                      disabled={!rec.output_html}
-                      variant="outlined"
-                      size="small"
-                    >
-                      Review Result
-                    </Button>
-                    <Button
-                      onClick={() => regenArticle(rec.id)}
-                      variant="contained"
-                      size="small"
-                    >
-                      {loadingReg ? (
-                        <CircleLoader size={10} />
-                      ) : (
-                        "Regenerate Article"
-                      )}
-                    </Button>
-                  </CardActions>
-                </Card>
-              </Grid>
-            </Grid>
-          </CardContent>
-        ))}
-      </Card>
-      {/* )} */}
+    </Card>
     </main>
   );
 };
