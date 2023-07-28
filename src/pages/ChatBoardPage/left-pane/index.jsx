@@ -41,21 +41,21 @@ const LeftPane = ({ width = 240, onUpdateActive }) => {
       sx={{
         width,
         flexShrink: 0,
-        '& .MuiDrawer-paper': {
+        "& .MuiDrawer-paper": {
           width,
-          overflow: 'hidden',
-          boxSizing: 'border-box',
-          backgroundColor: '#F3F3F3',
-          padding: '1.5rem .5rem 0',
+          overflow: "hidden",
+          boxSizing: "border-box",
+          backgroundColor: "#F3F3F3",
+          padding: "1.5rem .5rem 0",
         },
       }}
-      variant='persistent'
-      anchor='left'
+      variant="persistent"
+      anchor="left"
       open={true}
     >
       <Box
         sx={{
-          color: 'rgba(0, 0, 0, 0.50)',
+          color: "rgba(0, 0, 0, 0.50)",
           fontSize: 18,
           fontWeight: 600,
           marginBottom: 1,
@@ -64,12 +64,12 @@ const LeftPane = ({ width = 240, onUpdateActive }) => {
       >
         Kiyoung SaaS
       </Box>
-      <Box display='flex' alignItems='flex-start' width='100%' flexGrow={1}>
+      <Box display="flex" alignItems="flex-start" width="100%" flexGrow={1}>
         <List
           sx={{
-            width: '100%',
-            '.MuiListItemIcon-root': {
-              minWidth: '36px',
+            width: "100%",
+            ".MuiListItemIcon-root": {
+              minWidth: "36px",
             },
           }}
         >
@@ -78,20 +78,28 @@ const LeftPane = ({ width = 240, onUpdateActive }) => {
               marginBottom: 0.5,
             }}
           />
-          <ListItem onClick={()=>onUpdateActive(1)} disablePadding>
+          <ListItem onClick={() => onUpdateActive(1)} disablePadding>
             <ListItemButton>
               <ListItemIcon>
                 <CreateIcon />
               </ListItemIcon>
-              <ListItemText primary={'Create Content'} />
+              <ListItemText primary={"Create Content"} />
             </ListItemButton>
           </ListItem>
-          <ListItem onClick={()=>onUpdateActive(2)} disablePadding>
+          <ListItem onClick={() => onUpdateActive(2)} disablePadding>
             <ListItemButton>
               <ListItemIcon>
                 <SettingsIcon />
               </ListItemIcon>
-              <ListItemText primary={'Settings'} />
+              <ListItemText primary={"Settings"} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem onClick={() => onUpdateActive(3)} disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                <SettingsIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Prompts"} />
             </ListItemButton>
           </ListItem>
           <ListItem onClick={logout} disablePadding>
@@ -99,7 +107,7 @@ const LeftPane = ({ width = 240, onUpdateActive }) => {
               <ListItemIcon>
                 <LogoutIcon />
               </ListItemIcon>
-              <ListItemText primary={'Logout'} />
+              <ListItemText primary={"Logout"} />
             </ListItemButton>
           </ListItem>
         </List>

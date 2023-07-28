@@ -1919,6 +1919,29 @@
     "csstype" "^3.1.2"
     "prop-types" "^15.8.1"
 
+"@mui/styles@^5.14.1":
+  "integrity" "sha512-+oF3diiAbfnD5TFVyiwSe2rl+aNInBKpkam88oF2XrLtC3Ult9BNatn4tzH55U+s/KWL2zjEItdciaRIg0fAAg=="
+  "resolved" "https://registry.npmjs.org/@mui/styles/-/styles-5.14.1.tgz"
+  "version" "5.14.1"
+  dependencies:
+    "@babel/runtime" "^7.22.6"
+    "@emotion/hash" "^0.9.1"
+    "@mui/private-theming" "^5.13.7"
+    "@mui/types" "^7.2.4"
+    "@mui/utils" "^5.14.1"
+    "clsx" "^1.2.1"
+    "csstype" "^3.1.2"
+    "hoist-non-react-statics" "^3.3.2"
+    "jss" "^10.10.0"
+    "jss-plugin-camel-case" "^10.10.0"
+    "jss-plugin-default-unit" "^10.10.0"
+    "jss-plugin-global" "^10.10.0"
+    "jss-plugin-nested" "^10.10.0"
+    "jss-plugin-props-sort" "^10.10.0"
+    "jss-plugin-rule-value-function" "^10.10.0"
+    "jss-plugin-vendor-prefixer" "^10.10.0"
+    "prop-types" "^15.8.1"
+
 "@mui/system@^5.13.2", "@mui/system@^5.14.0":
   "integrity" "sha512-0HZGkX8miJbiNw+rjlZ9l0Cfkz1bSqfSHQH0EH9J+nx0aAm5cBleg9piOlLdCNIWGgecCqsw4x62erGrGjjcJg=="
   "resolved" "https://registry.npmjs.org/@mui/system/-/system-5.14.0.tgz"
@@ -1938,12 +1961,12 @@
   "resolved" "https://registry.npmjs.org/@mui/types/-/types-7.2.4.tgz"
   "version" "7.2.4"
 
-"@mui/utils@^5.13.1", "@mui/utils@^5.13.7":
-  "integrity" "sha512-/3BLptG/q0u36eYED7Nhf4fKXmcKb6LjjT7ZMwhZIZSdSxVqDqSTmATW3a56n3KEPQUXCU9TpxAfCBQhs6brVA=="
-  "resolved" "https://registry.npmjs.org/@mui/utils/-/utils-5.13.7.tgz"
-  "version" "5.13.7"
+"@mui/utils@^5.13.1", "@mui/utils@^5.13.7", "@mui/utils@^5.14.1":
+  "integrity" "sha512-39KHKK2JeqRmuUcLDLwM+c2XfVC136C5/yUyQXmO2PVbOb2Bol4KxtkssEqCbTwg87PSCG3f1Tb0keRsK7cVGw=="
+  "resolved" "https://registry.npmjs.org/@mui/utils/-/utils-5.14.1.tgz"
+  "version" "5.14.1"
   dependencies:
-    "@babel/runtime" "^7.22.5"
+    "@babel/runtime" "^7.22.6"
     "@types/prop-types" "^15.7.5"
     "@types/react-is" "^18.2.1"
     "prop-types" "^15.8.1"
@@ -6463,7 +6486,7 @@
   "resolved" "https://registry.npmjs.org/jsonpointer/-/jsonpointer-5.0.1.tgz"
   "version" "5.0.1"
 
-"jss-plugin-camel-case@^10.5.1":
+"jss-plugin-camel-case@^10.10.0", "jss-plugin-camel-case@^10.5.1":
   "integrity" "sha512-z+HETfj5IYgFxh1wJnUAU8jByI48ED+v0fuTuhKrPR+pRBYS2EDwbusU8aFOpCdYhtRc9zhN+PJ7iNE8pAWyPw=="
   "resolved" "https://registry.npmjs.org/jss-plugin-camel-case/-/jss-plugin-camel-case-10.10.0.tgz"
   "version" "10.10.0"
@@ -6472,7 +6495,7 @@
     "hyphenate-style-name" "^1.0.3"
     "jss" "10.10.0"
 
-"jss-plugin-default-unit@^10.5.1":
+"jss-plugin-default-unit@^10.10.0", "jss-plugin-default-unit@^10.5.1":
   "integrity" "sha512-SvpajxIECi4JDUbGLefvNckmI+c2VWmP43qnEy/0eiwzRUsafg5DVSIWSzZe4d2vFX1u9nRDP46WCFV/PXVBGQ=="
   "resolved" "https://registry.npmjs.org/jss-plugin-default-unit/-/jss-plugin-default-unit-10.10.0.tgz"
   "version" "10.10.0"
@@ -6480,7 +6503,7 @@
     "@babel/runtime" "^7.3.1"
     "jss" "10.10.0"
 
-"jss-plugin-global@^10.5.1":
+"jss-plugin-global@^10.10.0", "jss-plugin-global@^10.5.1":
   "integrity" "sha512-icXEYbMufiNuWfuazLeN+BNJO16Ge88OcXU5ZDC2vLqElmMybA31Wi7lZ3lf+vgufRocvPj8443irhYRgWxP+A=="
   "resolved" "https://registry.npmjs.org/jss-plugin-global/-/jss-plugin-global-10.10.0.tgz"
   "version" "10.10.0"
@@ -6488,7 +6511,7 @@
     "@babel/runtime" "^7.3.1"
     "jss" "10.10.0"
 
-"jss-plugin-nested@^10.5.1":
+"jss-plugin-nested@^10.10.0", "jss-plugin-nested@^10.5.1":
   "integrity" "sha512-9R4JHxxGgiZhurDo3q7LdIiDEgtA1bTGzAbhSPyIOWb7ZubrjQe8acwhEQ6OEKydzpl8XHMtTnEwHXCARLYqYA=="
   "resolved" "https://registry.npmjs.org/jss-plugin-nested/-/jss-plugin-nested-10.10.0.tgz"
   "version" "10.10.0"
@@ -6497,7 +6520,7 @@
     "jss" "10.10.0"
     "tiny-warning" "^1.0.2"
 
-"jss-plugin-props-sort@^10.5.1":
+"jss-plugin-props-sort@^10.10.0", "jss-plugin-props-sort@^10.5.1":
   "integrity" "sha512-5VNJvQJbnq/vRfje6uZLe/FyaOpzP/IH1LP+0fr88QamVrGJa0hpRRyAa0ea4U/3LcorJfBFVyC4yN2QC73lJg=="
   "resolved" "https://registry.npmjs.org/jss-plugin-props-sort/-/jss-plugin-props-sort-10.10.0.tgz"
   "version" "10.10.0"
@@ -6505,7 +6528,7 @@
     "@babel/runtime" "^7.3.1"
     "jss" "10.10.0"
 
-"jss-plugin-rule-value-function@^10.5.1":
+"jss-plugin-rule-value-function@^10.10.0", "jss-plugin-rule-value-function@^10.5.1":
   "integrity" "sha512-uEFJFgaCtkXeIPgki8ICw3Y7VMkL9GEan6SqmT9tqpwM+/t+hxfMUdU4wQ0MtOiMNWhwnckBV0IebrKcZM9C0g=="
   "resolved" "https://registry.npmjs.org/jss-plugin-rule-value-function/-/jss-plugin-rule-value-function-10.10.0.tgz"
   "version" "10.10.0"
@@ -6514,7 +6537,7 @@
     "jss" "10.10.0"
     "tiny-warning" "^1.0.2"
 
-"jss-plugin-vendor-prefixer@^10.5.1":
+"jss-plugin-vendor-prefixer@^10.10.0", "jss-plugin-vendor-prefixer@^10.5.1":
   "integrity" "sha512-UY/41WumgjW8r1qMCO8l1ARg7NHnfRVWRhZ2E2m0DMYsr2DD91qIXLyNhiX83hHswR7Wm4D+oDYNC1zWCJWtqg=="
   "resolved" "https://registry.npmjs.org/jss-plugin-vendor-prefixer/-/jss-plugin-vendor-prefixer-10.10.0.tgz"
   "version" "10.10.0"
@@ -6523,7 +6546,7 @@
     "css-vendor" "^2.0.8"
     "jss" "10.10.0"
 
-"jss@^10.5.1", "jss@10.10.0":
+"jss@^10.10.0", "jss@^10.5.1", "jss@10.10.0":
   "integrity" "sha512-cqsOTS7jqPsPMjtKYDUpdFC0AbhYFLTcuGRqymgmdJIeQ8cH7+AgX7YSgQy79wXloZq2VvATYxUOUQEvS1V/Zw=="
   "resolved" "https://registry.npmjs.org/jss/-/jss-10.10.0.tgz"
   "version" "10.10.0"
@@ -8188,7 +8211,7 @@
   "resolved" "https://registry.npmjs.org/react-uuid/-/react-uuid-2.0.0.tgz"
   "version" "2.0.0"
 
-"react@^0.13.0 || ^0.14.0 || >=15", "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.8 || ^17.0 || ^18.0", "react@^16.8.0 || ^17.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^17.0.0 || ^18.0.0", "react@^18.2.0", "react@>= 16", "react@>= 16.8.0", "react@>=16.6.0", "react@>=16.8", "react@>=16.8.0":
+"react@^0.13.0 || ^0.14.0 || >=15", "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.8 || ^17.0 || ^18.0", "react@^16.8.0 || ^17.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^17.0.0", "react@^17.0.0 || ^18.0.0", "react@^18.2.0", "react@>= 16", "react@>= 16.8.0", "react@>=16.6.0", "react@>=16.8", "react@>=16.8.0":
   "integrity" "sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ=="
   "resolved" "https://registry.npmjs.org/react/-/react-18.2.0.tgz"
   "version" "18.2.0"
