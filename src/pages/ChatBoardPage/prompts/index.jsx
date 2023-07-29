@@ -214,7 +214,7 @@ const Panel = () => {
             setTitle(obj.title_prompt);
             setSlug(obj.slug_prompt);
             setHeadings(obj.headings_prompt)
-            setTone(obj.default_tone)
+            setTone(obj.tone)
             setLanguage(obj.default_language)
             setHeading(obj.total_headings)
             setLength(obj.length)
@@ -244,7 +244,7 @@ const Panel = () => {
             setTitle(obj.title_prompt);
             setSlug(obj.slug_prompt);
             setHeadings(obj.headings_prompt)
-            setTone(obj.default_tone)
+            setTone(obj.tone)
             setLanguage(obj.default_language)
             setHeading(obj.total_headings)
             setLength(obj.length)
