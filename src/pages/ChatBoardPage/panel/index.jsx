@@ -118,6 +118,7 @@ const Panel = () => {
   const [url, setUrl] = useState("");
   const [length, setLength] = useState("");
   const [tone, setTone] = useState("");
+  const [author, setAuthor] = useState("");
   const [mainPrompt, setMainPrompt] = useState("");
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -158,6 +159,16 @@ const Panel = () => {
             (row) => row.credential_name === "wordpress"
           )
         );
+        let obj = data.data.configs.data.filter(
+          (row) => row.credential_name === "prompt_settings"
+        )
+        if(obj && obj.length){
+          obj = obj[0]
+          setTone(obj.tone)
+          setLength(obj.length)
+          setLanguage(obj.default_language)
+          setHeading(obj.total_headings)
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -264,6 +275,10 @@ const Panel = () => {
                     value={activeSite}
                     onChange={(eve) => {
                       setActiveSite(eve.target.value);
+                      let obj = sites.find((sit)=> sit.wordpress_url === eve.target.value)
+                      if(obj){
+                        setMainPrompt(obj.user_prompt);
+                      }
                     }}
                   >
                     <MenuItem value="select">Select Wordpress Site</MenuItem>
@@ -296,6 +311,17 @@ const Panel = () => {
                     type="text"
                     value={length}
                     onChange={(eve) => setLength(eve.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={12} md={3}>
+                  <Typography>Author</Typography>
+                  <TextField
+                    fullWidth
+                    placeholder="Name of author"
+                    name="Author"
+                    type="text"
+                    value={author}
+                    onChange={(eve) => setAuthor(eve.target.value)}
                   />
                 </Grid>
                 <Grid item xs={12} md={3}>
@@ -344,7 +370,7 @@ const Panel = () => {
                   </FormControl>
                 </Grid>
                 <Grid item xs={12} md={12}>
-                  <Typography>Main Prompt</Typography>
+                  <Typography>Custom Prompt</Typography>
                   <TextField
                     fullWidth
                     placeholder="Main prompt"

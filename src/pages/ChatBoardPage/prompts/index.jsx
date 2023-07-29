@@ -135,6 +135,31 @@ const regenerate = (id) => {
   });
 };
 
+const savePromptSettings = (base_prompt,
+  title_prompt,
+  slug_prompt,
+  headings_prompt,
+  conclusion_prompt,
+  total_headings,
+  default_language,
+  default_tone,
+  length,
+  body_prompt) => {
+    console.log('Base: ', base_prompt)
+    return axios.post(getBaseApi() + "prompt_settings", {
+      base_prompt,
+    title_prompt,
+    slug_prompt,
+    headings_prompt,
+    conclusion_prompt,
+    total_headings,
+    default_language,
+    default_tone,
+    length,
+    body_prompt 
+    })
+  }
+
 const Panel = () => {
   const [url, setUrl] = useState("");
   const [length, setLength] = useState("");
@@ -153,7 +178,7 @@ const Panel = () => {
   const [articleData, setArticleData] = useState("");
   const [autoUpload, setAutoUpload] = useState(true);
   const [base, setBase] = useState("");
-  const [title, seTitle] = useState("");
+  const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [body, setBody] = useState("");
   const [headings, setHeadings] = useState("");
@@ -180,11 +205,22 @@ const Panel = () => {
     //Retrieve user configs
     fetchConfigs()
       .then((data) => {
-        setSites(
-          data.data.configs.data.filter(
-            (row) => row.credential_name === "wordpress"
+          let obj = data.data.configs.data.filter(
+            (row) => row.credential_name === "prompt_settings"
           )
-        );
+          if(obj){
+            obj = obj[0];
+            setBase(obj.base_prompt);
+            setTitle(obj.title_prompt);
+            setSlug(obj.slug_prompt);
+            setHeadings(obj.headings_prompt)
+            setTone(obj.default_tone)
+            setLanguage(obj.default_language)
+            setHeading(obj.total_headings)
+            setLength(obj.length)
+            setBody(obj.body_prompt)
+            setConslusion(obj.conclusion_prompt)
+          }
       })
       .catch((err) => {
         console.log(err);
@@ -194,6 +230,36 @@ const Panel = () => {
   const handleChange = (event) => {
     // setAge(event.target.value);
   };
+
+  const savePrompts = () => {
+    setLoading(true)
+    savePromptSettings(base,title,slug,headings,conclusion,heading,language,tone,length,body).then(()=>{
+      fetchConfigs()
+      .then((data) => {
+          let obj = data.data.configs.data.filter(
+            (row) => row.credential_name === "prompt_settings"
+          )
+          if(obj){
+            setBase(obj.base_prompt);
+            setTitle(obj.title_prompt);
+            setSlug(obj.slug_prompt);
+            setHeadings(obj.headings_prompt)
+            setTone(obj.default_tone)
+            setLanguage(obj.default_language)
+            setHeading(obj.total_headings)
+            setLength(obj.length)
+            setBody(obj.body_prompt)
+            setConslusion(obj.conclusion_prompt)
+          }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    }).finally(()=>{
+      setLoading(false)
+    })
+  }
+
   const classes = useStyles();
 
   function go() {
@@ -278,7 +344,7 @@ const Panel = () => {
       </Modal>
       <form onSubmit={handleSubmit}>
         <Card>
-          <CardHeader subheader="  " title="Prompts" />
+          <CardHeader subheader=" " title="Prompts" />
 
           <Card>
             <CardContent>
@@ -288,7 +354,7 @@ const Panel = () => {
                 sx={{ display: "flex", justifyContent: "space-between" }}
               >
                 <Grid item xs={12} md={6}>
-                  <Typography>Article Length</Typography>
+                  <Typography>Article Length = {"{length}"}</Typography>
                   <TextField
                     fullWidth
                     size="medium"
@@ -301,11 +367,11 @@ const Panel = () => {
                   />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <Typography>Base</Typography>
+                  <Typography>Base Prompt</Typography>
                   <TextField
                     fullWidth
-                    placeholder="Base..."
-                    name="Tone"
+                    placeholder="Base Prompt..."
+                    name="Base"
                     type="text"
                     value={base}
                     className={classes.textField}
@@ -313,7 +379,7 @@ const Panel = () => {
                   />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <Typography>Headings</Typography>
+                  <Typography>Headings Prompt</Typography>
                   <TextField
                     fullWidth
                     size="medium"
@@ -326,7 +392,7 @@ const Panel = () => {
                   />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <Typography>Title</Typography>
+                  <Typography>Title Prompt</Typography>
                   <TextField
                     fullWidth
                     placeholder="Title..."
@@ -334,11 +400,11 @@ const Panel = () => {
                     type="text"
                     className={classes.textField}
                     value={title}
-                    onChange={(eve) => seTitle(eve.target.value)}
+                    onChange={(eve) => setTitle(eve.target.value)}
                   />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <Typography>Slug</Typography>
+                  <Typography>Slug Prompt</Typography>
                   <TextField
                     fullWidth
                     placeholder="Slug..."
@@ -350,7 +416,7 @@ const Panel = () => {
                   />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <Typography>Body</Typography>
+                  <Typography>Body Prompt</Typography>
                   <TextField
                     fullWidth
                     placeholder="Body..."
@@ -362,7 +428,7 @@ const Panel = () => {
                   />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <Typography>Conclusion</Typography>
+                  <Typography>Conclusion  Prompt</Typography>
                   <TextField
                     fullWidth
                     placeholder="conclusion..."
@@ -374,7 +440,25 @@ const Panel = () => {
                   />
                 </Grid>
 
+                <Grid item xs={12} md={6} style={{ paddingTop: "15px" }}>
+                <Typography>Default Language = {"{language}"}</Typography>
+                  <FormControl fullWidth>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      className={classes.textField}
+                      value={language}
+                      onChange={(eve) => {
+                        setLanguage(eve.target.value);
+                      }}
+                    >
+                      <MenuItem value={"English"}>English</MenuItem>
+                      <MenuItem value={"Korean"}>Korean</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
                 <Grid item xs={12} md={6} style={{ paddingTop: "40px" }}>
+                <Typography>Total Headings = {"{headings}"}</Typography>
                   <FormControl fullWidth>
                     <Select
                       labelId="demo-simple-select-label"
@@ -385,16 +469,31 @@ const Panel = () => {
                         setHeading(eve.target.value);
                       }}
                     >
-                      <MenuItem value="select">English</MenuItem>
-                      <MenuItem value={"korean"}>Korean</MenuItem>
+                      <MenuItem value="1">1</MenuItem>
+                      <MenuItem value="2">2</MenuItem>
+                      <MenuItem value="3">3</MenuItem>
+                      <MenuItem value="4">4</MenuItem>
+                      <MenuItem value="5">5</MenuItem>
                     </Select>
                   </FormControl>
+                </Grid>
+                <Grid item xs={12} md={6} style={{ paddingTop: "40px" }}>
+                <Typography>Default Tone = {"{tone}"}</Typography>
+                <TextField
+                    fullWidth
+                    placeholder="Tone..."
+                    name="Tone"
+                    type="text"
+                    className={classes.textField}
+                    value={tone}
+                    onChange={(eve) => setTone(eve.target.value)}
+                  />
                 </Grid>
               </Grid>
             </CardContent>
           </Card>
           <CardActions sx={{ justifyContent: "flex-end" }}>
-            <Button disabled={loading} onClick={go} variant="contained">
+            <Button disabled={loading} onClick={()=>savePrompts()} variant="contained">
               {loading ? <CircleLoader size={10} /> : "SAVE"}
             </Button>
           </CardActions>
