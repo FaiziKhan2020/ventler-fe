@@ -12,6 +12,7 @@ import {
   TextField,
   Typography,
   Grid,
+  ListItemIcon,
 } from "@mui/material";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -24,6 +25,7 @@ import { useCallback, useEffect, useState } from "react";
 import axios from 'axios';
 import { getBaseApi } from "../../../config/Enviroment";
 import CircleLoader from 'react-spinners/PulseLoader'
+import CreateIcon from '@mui/icons-material/CreateRounded';
 
 const style = {
   position: "absolute",
@@ -43,13 +45,30 @@ const fetchConfigs = () => {
   return axios.get(getBaseApi()+"configs")
 }
 
-const addWordpressDetails = ({wordpressTitle, wordpressUrl, wordpressUser, wordpressCreds, userPrompt}) =>{
+const addWordpressDetails = ({wordpressTitle, wordpressUrl, wordpressUser, wordpressCreds, userPrompt, categories}) =>{
   return axios.post(getBaseApi()+"add_wpress",{
     title: wordpressTitle,
     url: wordpressUrl,
     user: wordpressUser,
     creds: wordpressCreds,
-    prompt: userPrompt
+    prompt: userPrompt,
+    categories
+  })
+}
+const updateWordpressDetails = ({id,wordpressTitle, wordpressUrl, wordpressUser, wordpressCreds, userPrompt, categories}) =>{
+  return axios.post(getBaseApi()+"update_wpress",{
+    id,
+    title: wordpressTitle,
+    url: wordpressUrl,
+    user: wordpressUser,
+    creds: wordpressCreds,
+    prompt: userPrompt,
+    categories
+  })
+}
+const deleteWordpressDetails = ({id}) =>{
+  return axios.post(getBaseApi()+"delete_wpress",{
+    id
   })
 }
 
@@ -66,10 +85,13 @@ const Settings = () => {
     wordpressUser: "",
     wordpressCreds: "",
     userPrompt: "",
+    categories: "",
   });
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false);
   const [key, setKey] = useState('');
+  const [isUpdate, setIsUpdate] = useState(false);
+  const [activeId, setActiveId] = useState(null);
 
 
   useEffect(()=>{
@@ -125,7 +147,7 @@ const Settings = () => {
 
   const addSite = () => {
     setLoading(true)
-    addWordpressDetails({userPrompt: values.userPrompt,wordpressCreds: values.wordpressCreds, wordpressUrl: values.wordpressUrl, wordpressTitle: values.wordpressTitle, wordpressUser: values.wordpressUser}).then((res)=>{
+    addWordpressDetails({userPrompt: values.userPrompt,wordpressCreds: values.wordpressCreds, wordpressUrl: values.wordpressUrl, wordpressTitle: values.wordpressTitle, wordpressUser: values.wordpressUser, categories: values.categories}).then((res)=>{
       console.log('Log: ', res)
     }).catch((err)=>{
       setLoading(false)
@@ -140,7 +162,46 @@ const Settings = () => {
       })
     })
   }
+
+  const updateSite = () => {
+    setLoading(true);
+    updateWordpressDetails({id: activeId,userPrompt: values.userPrompt,wordpressCreds: values.wordpressCreds, wordpressUrl: values.wordpressUrl, wordpressTitle: values.wordpressTitle, wordpressUser: values.wordpressUser, categories: values.categories}).then((res)=>{
+      console.log('Log: ', res)
+    }).catch((err)=>{
+      setLoading(false)
+    }).finally(()=>{
+      fetchConfigs().then((data)=>{
+        console.log('Confgis: ', data.data)
+      }).catch((err)=>{
+        console.log(err)
+      }).then(()=>{
+        setLoading(false)
+        setOpen(false)
+      })
+    })
+  }
+
+  const deleteSite = () => {
+    setLoading(true);
+    deleteWordpressDetails({id: activeId}).then((res)=>{
+      console.log('Log: ', res)
+    }).catch((err)=>{
+      setLoading(false)
+    }).finally(()=>{
+      fetchConfigs().then((data)=>{
+        console.log('Confgis: ', data.data)
+      }).catch((err)=>{
+        console.log(err)
+      }).then(()=>{
+        setLoading(false)
+        setOpen(false)
+      })
+    })
+  }
+
   const handleClose = () => {
+    setIsUpdate(false)
+    setActiveId(null)
     setOpen(false)
   };
 
@@ -163,6 +224,23 @@ const Settings = () => {
     })
   }
 
+  function editCred(id){
+    let cred = data.find((row)=> row.id === id);
+    if(cred){
+     setIsUpdate(true)
+     let obj = {}
+     obj['wordpressTitle'] = cred.wordpress_site
+     obj['wordpressUrl'] = cred.wordpress_url
+     obj['wordpressUser'] = cred.wordpress_user
+     obj['wordpressCreds'] = cred.credential_value
+     obj['userPrompt'] = cred.user_prompt
+     obj['categories'] = cred.categories
+     setValues(obj)
+     setActiveId(id);
+     setOpen(true)
+    }
+  }
+
 
   return (
     <main className="ml-0 h-full p-6 flex-grow">
@@ -174,11 +252,12 @@ const Settings = () => {
       >
         <Box sx={{ ...style }}>
           <Typography variant="h5" sx={{ mb: 2 }}>
-            Add Credentials
+           {!isUpdate ? "Add Credentials" : "Change Credentials"}
           </Typography>
           <Typography>Wordpress Title</Typography>
           <TextField
             fullWidth
+            value={values.wordpressTitle}
             onChange={handleChange}
             placeholder="blogging"
             name="wordpressTitle"
@@ -187,6 +266,7 @@ const Settings = () => {
           <Typography sx={{ mt: 2 }}>URL</Typography>
           <TextField
             fullWidth
+            value={values.wordpressUrl}
             onChange={handleChange}
             placeholder="example@web.com"
             name="wordpressUrl"
@@ -195,25 +275,37 @@ const Settings = () => {
           <Typography sx={{ mt: 2 }}>Credentials</Typography>
           <TextField
             fullWidth
+            value={values.wordpressCreds}
             onChange={handleChange}
-            placeholder="Wp_4654564646"
+            placeholder="wordpress user password"
             name="wordpressCreds"
             type="text"
           />
           <Typography sx={{ mt: 2 }}>Wordpress Username</Typography>
           <TextField
             fullWidth
+            value={values.wordpressUser}
             onChange={handleChange}
-            placeholder="Wp_4654564646"
+            placeholder="wordpress user id"
             name="wordpressUser"
             type="text"
           />
           <Typography sx={{ mt: 2 }}>Additional Prompt</Typography>
           <TextField
             fullWidth
+            value={values.userPrompt}
             onChange={handleChange}
-            placeholder="Wp_4654564646"
+            placeholder="Do some seo stuff!!"
             name="userPrompt"
+            type="text"
+          />
+          <Typography sx={{ mt: 2 }}>Categories (semicolon separated)</Typography>
+          <TextField
+            fullWidth
+            value={values.categories}
+            onChange={handleChange}
+            placeholder="Food;Tech;Business"
+            name="categories"
             type="text"
           />
 
@@ -221,9 +313,19 @@ const Settings = () => {
             variant="contained"
             sx={{ mt: 2, minWidth:'120px', minHeight:'40px' }}
             style={{ float: "right" }}
-            onClick={()=>addSite()}
+            onClick={()=> isUpdate ? updateSite() :addSite()}
           >
-            {loading ? <CircleLoader size={10} color="white"/> : 'Add Site'}
+            {loading ? <CircleLoader size={10} color="white"/> :(!isUpdate ?'Add Site':'Update Site')}
+          </Button>
+          <Button
+            hidden={!isUpdate}
+            variant="contained"
+            color="error"
+            sx={{ mt: 2, minWidth:'120px', minHeight:'40px', marginRight: '10px' }}
+            style={{ float: "right" }}
+            onClick={()=>deleteSite()}
+          >
+            {loading ? <CircleLoader size={10} color="white"/> : 'Delete'}
           </Button>
         </Box>
       </Modal>
@@ -278,6 +380,7 @@ const Settings = () => {
           <Table aria-label="customized table">
             <TableHead>
               <TableRow>
+                <StyledTableCell width={"2px"}> </StyledTableCell>
                 <StyledTableCell>Website Name</StyledTableCell>
                 <StyledTableCell>URL</StyledTableCell>
                 <StyledTableCell>Credentials</StyledTableCell>
@@ -288,6 +391,9 @@ const Settings = () => {
             <TableBody >
               {data.filter((row)=>row.credential_name === 'wordpress').map((row) => (
                 <StyledTableRow key={row.credential_name}>
+                  <StyledTableCell onClick={()=>editCred(row.id)} sx={{cursor:'pointer'}} width={"2px"}> <ListItemIcon>
+                <CreateIcon />
+              </ListItemIcon> </StyledTableCell>
                   <StyledTableCell component="th" scope="row">
                     {row.wordpress_site}
                   </StyledTableCell>

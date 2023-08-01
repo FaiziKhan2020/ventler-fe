@@ -367,7 +367,7 @@ const Panel = () => {
                   />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <Typography>Base Prompt</Typography>
+                  <Typography>Base Prompt (1st)</Typography>
                   <TextField
                     fullWidth
                     placeholder="Base Prompt..."
@@ -379,7 +379,7 @@ const Panel = () => {
                   />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <Typography>Headings Prompt</Typography>
+                  <Typography>Headings Prompt (3rd)</Typography>
                   <TextField
                     fullWidth
                     size="medium"
@@ -392,7 +392,7 @@ const Panel = () => {
                   />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <Typography>Title Prompt</Typography>
+                  <Typography>Title Prompt (2nd)</Typography>
                   <TextField
                     fullWidth
                     placeholder="Title..."
@@ -404,7 +404,7 @@ const Panel = () => {
                   />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <Typography>Slug Prompt</Typography>
+                  <Typography>Slug Prompt (6th)</Typography>
                   <TextField
                     fullWidth
                     placeholder="Slug..."
@@ -416,7 +416,7 @@ const Panel = () => {
                   />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <Typography>Body Prompt</Typography>
+                  <Typography>Body Prompt (4th)</Typography>
                   <TextField
                     fullWidth
                     placeholder="Body..."
@@ -428,7 +428,7 @@ const Panel = () => {
                   />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <Typography>Conclusion  Prompt</Typography>
+                  <Typography>Conclusion  Prompt (5th)</Typography>
                   <TextField
                     fullWidth
                     placeholder="conclusion..."

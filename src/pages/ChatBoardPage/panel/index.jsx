@@ -131,6 +131,7 @@ const Panel = () => {
   const [language, setLanguage] = useState("English");
   const [heading, setHeading] = useState("select");
   const [articleData, setArticleData] = useState("");
+  const [category, setCategory] = useState("select");
   const [autoUpload, setAutoUpload] = useState(true);
 
   useEffect(() => {
@@ -278,6 +279,12 @@ const Panel = () => {
                       let obj = sites.find((sit)=> sit.wordpress_url === eve.target.value)
                       if(obj){
                         setMainPrompt(obj.user_prompt);
+                        if(obj.tone) setTone(obj.tone)
+                        if(obj.default_language) setLanguage(obj.default_language)
+                        if(obj.total_headings) setHeading(obj.total_headings)
+                        if(obj.length) setLength(obj.length)
+                        if(obj.author) setAuthor(obj.author)
+                        if(obj.default_category) setCategory(obj.default_category)
                       }
                     }}
                   >
@@ -355,17 +362,19 @@ const Panel = () => {
                     <Select
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
-                      value={heading}
+                      value={category}
                       onChange={(eve) => {
-                        setHeading (eve.target.value);
+                        setCategory(eve.target.value);
                       }}
                     >
-                      <MenuItem value="select">Number of headings</MenuItem>
-                      <MenuItem value={"1"}>1</MenuItem>
-                      <MenuItem value={"2"}>2</MenuItem>
-                      <MenuItem value={"3"}>3</MenuItem>
-                      <MenuItem value={"4"}>4</MenuItem>
-                      <MenuItem value={"5"}>5</MenuItem>
+                      <MenuItem value="select">Select category</MenuItem>
+                      {
+                        sites && sites.length && sites.find((ste)=>ste.wordpress_url === activeSite)
+                        && sites.find((ste)=>ste.wordpress_url === activeSite).categories.split(';').map((cat)=>(
+                          <MenuItem value={cat}>{cat}</MenuItem>
+                        ))
+                        
+                      }
                     </Select>
                   </FormControl>
                 </Grid>
@@ -406,16 +415,17 @@ const Panel = () => {
           style={{
             overflow: "scroll",
             maxHeight: "300px",
-            overflowX: "hidden",
+            overflowX: "scroll",
           }}
         >
           <Table aria-label="customized table">
             <TableHead>
               <TableRow>
                 <StyledTableCell>Article Title</StyledTableCell>
-                <StyledTableCell>URL</StyledTableCell>
+                <StyledTableCell width={"40px"}>URL</StyledTableCell>
                 <StyledTableCell>Wordpress Site</StyledTableCell>
                 <StyledTableCell>Status</StyledTableCell>
+                <StyledTableCell>Post Link</StyledTableCell>
                 <StyledTableCell>Actions</StyledTableCell>
               </TableRow>
             </TableHead>
@@ -433,6 +443,9 @@ const Panel = () => {
                     </StyledTableCell>
                     <StyledTableCell>{row.wordpress_url}</StyledTableCell>
                     <StyledTableCell>{row.status}</StyledTableCell>
+                    <StyledTableCell><a style={{ color: "blue" }} href={row.post_url}>
+                        {row.post_url}
+                      </a></StyledTableCell>
                     <StyledTableCell>
                       <Box display={"grid"}>
                     <Button
