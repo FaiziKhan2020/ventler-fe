@@ -163,6 +163,7 @@ const Panel = () => {
         let obj = data.data.configs.data.filter(
           (row) => row.credential_name === "prompt_settings"
         )
+        console.log('Ob: ', obj);
         if(obj && obj.length){
           obj = obj[0]
           setTone(obj.tone)
@@ -320,10 +321,9 @@ const Panel = () => {
                     onChange={(eve) => setLength(eve.target.value)}
                   />
                 </Grid>
-                <Grid item xs={12} md={3}>
+                <Grid item xs={12} md={2}>
                   <Typography>Author</Typography>
                   <TextField
-                    fullWidth
                     placeholder="Name of author"
                     name="Author"
                     type="text"
@@ -331,7 +331,7 @@ const Panel = () => {
                     onChange={(eve) => setAuthor(eve.target.value)}
                   />
                 </Grid>
-                <Grid item xs={12} md={3}>
+                <Grid item xs={12} md={2}>
                   <Typography>Tone</Typography>
                   <TextField
                     fullWidth
@@ -354,6 +354,33 @@ const Panel = () => {
                     >
                       <MenuItem value={"English"}>English</MenuItem>
                       <MenuItem value={"Korean"}>Korean</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} md={2} style={{ paddingTop: "40px" }}>
+                  <FormControl fullWidth>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={heading}
+                      onChange={(eve) => {
+                        setHeading(eve.target.value);
+                      }}
+                    >
+                      <MenuItem value="1">1</MenuItem>
+                      <MenuItem value="2">2</MenuItem>
+                      <MenuItem value="3">3</MenuItem>
+                      <MenuItem value="4">4</MenuItem>
+                      <MenuItem value="5">5</MenuItem>
+                      <MenuItem value="6">6</MenuItem>
+                      <MenuItem value="7">7</MenuItem>
+                      <MenuItem value="8">8</MenuItem>
+                      <MenuItem value="9">9</MenuItem>
+                      <MenuItem value="10">10</MenuItem>
+                      <MenuItem value="11">12</MenuItem>
+                      <MenuItem value="13">13</MenuItem>
+                      <MenuItem value="14">14</MenuItem>
+                      <MenuItem value="15">15</MenuItem>
                     </Select>
                   </FormControl>
                 </Grid>
@@ -413,8 +440,6 @@ const Panel = () => {
         <TableContainer
           component={Paper}
           style={{
-            overflow: "scroll",
-            maxHeight: "300px",
             overflowX: "scroll",
           }}
         >
