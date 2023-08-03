@@ -144,7 +144,8 @@ const savePromptSettings = (base_prompt,
   default_language,
   default_tone,
   length,
-  body_prompt) => {
+  body_prompt,
+  image_prompt) => {
     console.log('Base: ', base_prompt)
     return axios.post(getBaseApi() + "prompt_settings", {
       base_prompt,
@@ -156,7 +157,8 @@ const savePromptSettings = (base_prompt,
     default_language,
     default_tone,
     length,
-    body_prompt 
+    body_prompt,
+    image_prompt
     })
   }
 
@@ -183,6 +185,7 @@ const Panel = () => {
   const [body, setBody] = useState("");
   const [headings, setHeadings] = useState("");
   const [conclusion, setConslusion] = useState("");
+  const [image, setImage] = useState("");
 
   useEffect(() => {
     getQueue()
@@ -220,6 +223,7 @@ const Panel = () => {
             setLength(obj.length)
             setBody(obj.body_prompt)
             setConslusion(obj.conclusion_prompt)
+            setImage(obj.image_prompt)
           }
       })
       .catch((err) => {
@@ -250,6 +254,7 @@ const Panel = () => {
             setLength(obj.length)
             setBody(obj.body_prompt)
             setConslusion(obj.conclusion_prompt)
+            setImage(obj.image_prompt)
           }
       })
       .catch((err) => {
@@ -496,6 +501,18 @@ const Panel = () => {
                     className={classes.textField}
                     value={tone}
                     onChange={(eve) => setTone(eve.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={12} md={6} style={{ paddingTop: "40px" }}>
+                <Typography>Image Prompt</Typography>
+                <TextField
+                    fullWidth
+                    placeholder="Image prompt..."
+                    name="Tone"
+                    type="text"
+                    className={classes.textField}
+                    value={image}
+                    onChange={(eve) => setImage(eve.target.value)}
                   />
                 </Grid>
               </Grid>
