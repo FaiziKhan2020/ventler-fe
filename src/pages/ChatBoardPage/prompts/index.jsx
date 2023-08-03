@@ -237,7 +237,7 @@ const Panel = () => {
 
   const savePrompts = () => {
     setLoading(true)
-    savePromptSettings(base,title,slug,headings,conclusion,heading,language,tone,length,body).then(()=>{
+    savePromptSettings(base,title,slug,headings,conclusion,heading,language,tone,length,body,image).then(()=>{
       fetchConfigs()
       .then((data) => {
           let obj = data.data.configs.data.filter(
