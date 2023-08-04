@@ -100,7 +100,7 @@ const insertIntoQueue = (title, url, wordpressUrl, site,autoUpload,length,tone,m
     tone,
     length,
     author,
-    
+    category
   });
 };
 
@@ -206,7 +206,7 @@ const Panel = () => {
     let site = sites.find((site) => site.wordpress_url === activeSite);
     if (!site) return window.alert("Something went wrong!");
     setLoading(true);
-    insertIntoQueue(site.wordpress_site, url, activeSite, site.wordpress_site,autoUpload,length,tone,mainPrompt,language,heading)
+    insertIntoQueue(site.wordpress_site, url, activeSite, site.wordpress_site,autoUpload,length,tone,mainPrompt,language,heading,author,category)
       .then((res) => {
         getQueue()
           .then((data) => {
