@@ -157,7 +157,7 @@ const Panel = () => {
       .catch((err) => {
         console.log(err);
       });
-    },15000)
+    },1000 * 60 * 2)
   }, []);
 
   useEffect(() => {
