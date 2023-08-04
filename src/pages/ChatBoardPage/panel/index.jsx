@@ -87,7 +87,7 @@ const init_loop = () => {
   return axios.get(getBaseApi() + "do");
 };
 
-const insertIntoQueue = (title, url, wordpressUrl, site,autoUpload,length,tone,mainPrompt,language,headings) => {
+const insertIntoQueue = (title, url, wordpressUrl, site,autoUpload,length,tone,mainPrompt,language,headings,author,category) => {
   return axios.post(getBaseApi() + "insert_queue", {
     title,
     url,
@@ -98,7 +98,9 @@ const insertIntoQueue = (title, url, wordpressUrl, site,autoUpload,length,tone,m
     headings,
     language,
     tone,
-    length
+    length,
+    author,
+    
   });
 };
 
@@ -143,6 +145,19 @@ const Panel = () => {
       .catch((err) => {
         console.log(err);
       });
+  }, []);
+
+  useEffect(() => {
+    setTimeout(()=>{
+      getQueue()
+      .then((data) => {
+        console.log("Queue: ", data.data);
+        setData(data.data.queue.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    },15000)
   }, []);
 
   useEffect(() => {

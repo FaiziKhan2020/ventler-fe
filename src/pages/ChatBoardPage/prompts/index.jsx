@@ -145,7 +145,8 @@ const savePromptSettings = (base_prompt,
   default_tone,
   length,
   body_prompt,
-  image_prompt) => {
+  image_prompt,
+  heading_image_prompt) => {
     console.log('Base: ', base_prompt)
     return axios.post(getBaseApi() + "prompt_settings", {
       base_prompt,
@@ -158,7 +159,8 @@ const savePromptSettings = (base_prompt,
     default_tone,
     length,
     body_prompt,
-    image_prompt
+    image_prompt,
+    heading_image_prompt
     })
   }
 
@@ -186,6 +188,7 @@ const Panel = () => {
   const [headings, setHeadings] = useState("");
   const [conclusion, setConslusion] = useState("");
   const [image, setImage] = useState("");
+  const [headImage, setHeadImage] = useState("");
 
   useEffect(() => {
     getQueue()
@@ -224,6 +227,7 @@ const Panel = () => {
             setBody(obj.body_prompt)
             setConslusion(obj.conclusion_prompt)
             setImage(obj.image_prompt)
+            setHeadImage(obj.heading_image_prompt)
           }
       })
       .catch((err) => {
@@ -237,7 +241,7 @@ const Panel = () => {
 
   const savePrompts = () => {
     setLoading(true)
-    savePromptSettings(base,title,slug,headings,conclusion,heading,language,tone,length,body,image).then(()=>{
+    savePromptSettings(base,title,slug,headings,conclusion,heading,language,tone,length,body,image,headImage).then(()=>{
       fetchConfigs()
       .then((data) => {
           let obj = data.data.configs.data.filter(
@@ -255,6 +259,7 @@ const Panel = () => {
             setBody(obj.body_prompt)
             setConslusion(obj.conclusion_prompt)
             setImage(obj.image_prompt)
+            setHeadImage(obj.heading_image_prompt)
           }
       })
       .catch((err) => {
@@ -513,6 +518,18 @@ const Panel = () => {
                     className={classes.textField}
                     value={image}
                     onChange={(eve) => setImage(eve.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={12} md={6} style={{ paddingTop: "40px" }}>
+                <Typography>Heading Image Prompt</Typography>
+                <TextField
+                    fullWidth
+                    placeholder="Heading Image prompt..."
+                    name="Head"
+                    type="text"
+                    className={classes.textField}
+                    value={headImage}
+                    onChange={(eve) => setHeadImage(eve.target.value)}
                   />
                 </Grid>
               </Grid>
