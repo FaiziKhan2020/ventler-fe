@@ -87,13 +87,15 @@ const init_loop = () => {
   return axios.get(getBaseApi() + "do");
 };
 
-const insertIntoQueue = (title, url, wordpressUrl, site,autoUpload,length,tone,mainPrompt,language,headings,author,category) => {
+const insertIntoQueue = (title, url, wordpressUrl, site,autoUpload,length,tone,mainPrompt,language,headings,author,category,productBlog,product_image_url) => {
   return axios.post(getBaseApi() + "insert_queue", {
     title,
     url,
     wordpress_url: wordpressUrl,
     site,
     auto_upload: autoUpload,
+    product_blog: productBlog,
+    product_image_url,
     main_prompt: mainPrompt,
     headings,
     language,
@@ -135,6 +137,8 @@ const Panel = () => {
   const [articleData, setArticleData] = useState("");
   const [category, setCategory] = useState("select");
   const [autoUpload, setAutoUpload] = useState(true);
+  const [productBlog, setProductBlog] = useState(false);
+  const [productImageUrl, setProductImageUrl] = useState("");
 
   useEffect(() => {
     getQueue()
@@ -206,7 +210,7 @@ const Panel = () => {
     let site = sites.find((site) => site.wordpress_url === activeSite);
     if (!site) return window.alert("Something went wrong!");
     setLoading(true);
-    insertIntoQueue(site.wordpress_site, url, activeSite, site.wordpress_site,autoUpload,length,tone,mainPrompt,language,heading,author,category)
+    insertIntoQueue(site.wordpress_site, url, activeSite, site.wordpress_site,autoUpload,length,tone,mainPrompt,language,heading,author,category,productBlog,productImageUrl)
       .then((res) => {
         getQueue()
           .then((data) => {
@@ -439,6 +443,25 @@ const Panel = () => {
             <Switch
               onChange={() => setAutoUpload((val) => !val)}
               checked={autoUpload}
+            />
+            <label style={{ lineHeight: "36px", marginLeft: "16px" }}>
+              Amazon Product Blog:{" "}
+            </label>
+            <Switch
+              onChange={() => setProductBlog((val) => !val)}
+              checked={productBlog}
+            />
+          
+            <Typography style={{marginLeft:"15px"}}>Amazon Product Image Link</Typography>
+            <TextField
+                    style={{marginLeft:"15px"}}
+                    fullWidth
+                    disabled={!productBlog}
+                    placeholder="Amazon product image link.."
+                    name="product"
+                    type="text"
+                    value={productImageUrl}
+                    onChange={(eve) => setProductImageUrl(eve.target.value)}
             />
           </Card>
           <CardActions sx={{ justifyContent: "flex-end" }}>

@@ -146,7 +146,9 @@ const savePromptSettings = (base_prompt,
   length,
   body_prompt,
   image_prompt,
-  heading_image_prompt) => {
+  heading_image_prompt,
+  product_blog_prompt,
+  referral_id) => {
     console.log('Base: ', base_prompt)
     return axios.post(getBaseApi() + "prompt_settings", {
       base_prompt,
@@ -160,7 +162,9 @@ const savePromptSettings = (base_prompt,
     length,
     body_prompt,
     image_prompt,
-    heading_image_prompt
+    heading_image_prompt,
+    product_blog_prompt,
+    referral_id
     })
   }
 
@@ -189,6 +193,8 @@ const Panel = () => {
   const [conclusion, setConslusion] = useState("");
   const [image, setImage] = useState("");
   const [headImage, setHeadImage] = useState("");
+  const [productBlogPrompt, setProductBlogPrompt] = useState("");
+  const [referralId, setReferralId] = useState("");
 
   useEffect(() => {
     getQueue()
@@ -241,7 +247,7 @@ const Panel = () => {
 
   const savePrompts = () => {
     setLoading(true)
-    savePromptSettings(base,title,slug,headings,conclusion,heading,language,tone,length,body,image,headImage).then(()=>{
+    savePromptSettings(base,title,slug,headings,conclusion,heading,language,tone,length,body,image,headImage,productBlogPrompt,referralId).then(()=>{
       fetchConfigs()
       .then((data) => {
           let obj = data.data.configs.data.filter(
@@ -260,6 +266,8 @@ const Panel = () => {
             setConslusion(obj.conclusion_prompt)
             setImage(obj.image_prompt)
             setHeadImage(obj.heading_image_prompt)
+            setProductBlogPrompt(obj.product_blog_prompt)
+            setReferralId(obj.referral_id)
           }
       })
       .catch((err) => {
@@ -530,6 +538,30 @@ const Panel = () => {
                     className={classes.textField}
                     value={headImage}
                     onChange={(eve) => setHeadImage(eve.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={12} md={6} style={{ paddingTop: "40px" }}>
+                <Typography>Product Blog Prompt</Typography>
+                <TextField
+                    fullWidth
+                    placeholder="Product blog prompt..."
+                    name="Head"
+                    type="text"
+                    className={classes.textField}
+                    value={productBlogPrompt}
+                    onChange={(eve) => setProductBlogPrompt(eve.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={12} md={6} style={{ paddingTop: "40px" }}>
+                <Typography>Referral Id</Typography>
+                <TextField
+                    fullWidth
+                    placeholder="Referral Id..."
+                    name="Head"
+                    type="text"
+                    className={classes.textField}
+                    value={referralId}
+                    onChange={(eve) => setReferralId(eve.target.value)}
                   />
                 </Grid>
               </Grid>
